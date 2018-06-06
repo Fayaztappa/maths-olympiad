@@ -14,7 +14,7 @@
 
         <ContentControl  Grid.Row="0" Content="{Binding TestSessionInput}"/>
 
-        <Button Grid.Row="1" Style="{StaticResource ActionButtonStyle}" Command="{Binding GenerateCommand}" Content="Generate" />
+        <Button Grid.Row="1" Style="{StaticResource ActionButtonStyle}" Click="ButtonBase_OnClick" Command="{Binding GenerateCommand}" Content="Generate" />
 
         <ContentControl  Grid.Row="2" Content="{Binding Session}"/>
         

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -13,7 +14,14 @@ namespace Maths.Olympiad.Host.Views
         {
             InitializeComponent();
             IsVisibleChanged += OnIsVisibleChanged;
+            DataContextChanged += OnIsVisibleChanged;
+            Loaded += OnLoaded;
 
+            SetFocus();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
             SetFocus();
         }
 

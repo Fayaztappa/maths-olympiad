@@ -24,7 +24,7 @@
                 <Setter Property="Margin" Value="0,0,0,10"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
-                <Setter Property="Width" Value="150"/>
+                <Setter Property="Width" Value="100"/>
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="IsTabStop" Value="False"/>
 
@@ -50,7 +50,7 @@
                 <views:MathematicsScreenView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:AdditionalOperationViewModel}">
+            <!--<DataTemplate DataType="{x:Type viewModels:AdditionalOperationViewModel}">
                 <views:OperationView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:AdditionQuestionViewModel}">
@@ -68,8 +68,41 @@
             <DataTemplate DataType="{x:Type viewModels:SubstractionTestSessionViewModel}">
                 <views:TestSessionView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:MultiplicationOperationViewModel}">
+                <views:OperationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:MultiplicationQuestionViewModel}">
+                <views:QuestionView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:MultiplicationTestSessionViewModel}">
+                <views:TestSessionView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:DivisionOperationViewModel}">
+                <views:OperationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:DivisionQuestionViewModel}">
+                <views:QuestionView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:DivisionTestSessionViewModel}">
+                <views:TestSessionView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:AAndSTestSessionInputViewModel}">
                 <views:AAndSTestSessionInputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:MAndDTestSessionInputViewModel}">
+                <views:MAndDTestSessionInputView/>
+            </DataTemplate>-->
+            <DataTemplate DataType="{x:Type viewModels:SimpleOperationViewModel}">
+                <views:OperationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:SimpleOperationQuestionViewModel}">
+                <views:QuestionView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:SimpleOperationTestSessionViewModel}">
+                <views:TestSessionView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:SimpleOperationTestSessionInputViewModel}">
+                <views:SimpleOperationTestSessionInputView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

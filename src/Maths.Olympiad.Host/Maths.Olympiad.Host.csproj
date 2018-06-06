@@ -60,6 +60,9 @@
     <Compile Include="Views\AAndSTestSessionInputView.xaml.cs">
       <DependentUpon>AAndSTestSessionInputView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MAndDTestSessionInputView.xaml.cs">
+      <DependentUpon>MAndDTestSessionInputView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MathematicsScreenView.xaml.cs">
       <DependentUpon>MathematicsScreenView.xaml</DependentUpon>
     </Compile>
@@ -68,6 +71,9 @@
     </Compile>
     <Compile Include="Views\QuestionView.xaml.cs">
       <DependentUpon>QuestionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SimpleOperationTestSessionInputView.xaml.cs">
+      <DependentUpon>SimpleOperationTestSessionInputView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TestSessionView.xaml.cs">
       <DependentUpon>TestSessionView.xaml</DependentUpon>
@@ -95,6 +101,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\MAndDTestSessionInputView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MathematicsScreenView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,6 +116,10 @@
     <Page Include="Views\QuestionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SimpleOperationTestSessionInputView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TestSessionView.xaml">
       <Generator>MSBuild:Compile</Generator>
