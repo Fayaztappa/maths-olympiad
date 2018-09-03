@@ -8,6 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:IsNullValueToBooleanConverter x:Key="IsNullValueToBooleanConverter" />
+        <converters:BooleanNotConverter x:Key="BooleanNotConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,7 +23,7 @@
             <Button Style="{StaticResource ActionButtonStyle}" Command="{Binding NextCommand}" Content="Next"/>
         </StackPanel>
 
-        <Button Grid.Row="2" Grid.Column="0" Style="{StaticResource ActionButtonStyle}" Visibility="{Binding SelectedQuestion, Converter={StaticResource IsNullValueToBooleanConverter}}" Command="{Binding FinishCommand}" Content="Finish"/>
+        <Button Grid.Row="2" Grid.Column="0" Style="{StaticResource ActionButtonStyle}" Visibility="{Binding SelectedQuestion, Converter={StaticResource IsNullValueToBooleanConverter}}" Command="{Binding FinishCommand}" Content="Finish" IsEnabled="{Binding IsFinished, Converter={StaticResource BooleanNotConverter}}"/>
 
     </Grid>
 </UserControl>

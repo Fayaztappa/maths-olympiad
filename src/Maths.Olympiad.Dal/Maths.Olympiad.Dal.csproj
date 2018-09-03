@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\SqlServerTestDal.cs" />
     <Compile Include="JSonSerializer.cs" />
     <Compile Include="Interfaces\ITestDal.cs" />
     <Compile Include="Interfaces\ISerializer.cs" />
