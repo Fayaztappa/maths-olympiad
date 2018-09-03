@@ -2,9 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Maths.Olympiad.Host.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:BooleanNotConverter x:Key="BooleanNotConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -15,7 +19,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource TextBlockStyle}" Text="Operation:"/>
-        <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource ComboBoxStyle}" SelectedItem="{Binding SelectedOperation}" ItemsSource="{Binding Operations}" DisplayMemberPath="OperationType"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource ComboBoxStyle}" SelectedItem="{Binding SelectedOperation}" ItemsSource="{Binding Operations}" DisplayMemberPath="OperationType"
+                  IsEnabled="{Binding SelectedOperation.InProgress, FallbackValue=True, Converter={StaticResource BooleanNotConverter}}"/>
         <ContentControl Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding SelectedOperation}"></ContentControl>
     </Grid>
 </UserControl>

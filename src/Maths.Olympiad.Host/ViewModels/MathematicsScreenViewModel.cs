@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows.Input;
+using Maths.Olympiad.Dal.Data;
+using Maths.Olympiad.Dal.Interfaces;
 
 namespace Maths.Olympiad.Host.ViewModels
 {
@@ -29,16 +31,16 @@ namespace Maths.Olympiad.Host.ViewModels
             }
         }
 
-        public MathematicsScreenViewModel()
+        public MathematicsScreenViewModel(ITestDal testDal)
         {
             GenerateSamplesCommand = new DelegateCommand(OnGenerateSamples);
 
             Operations = new List<IOperationViewModel>()
             {
-                new SimpleOperationViewModel(new AdditionOperation()),
-                new SimpleOperationViewModel(new SubstractionOperation()),
-                new SimpleOperationViewModel(new MultiplicationOperation()),
-                new SimpleOperationViewModel(new DivisionOperation()),
+                new SimpleOperationViewModel(new AdditionOperation(), testDal),
+                new SimpleOperationViewModel(new SubstractionOperation(), testDal),
+                new SimpleOperationViewModel(new MultiplicationOperation(), testDal),
+                new SimpleOperationViewModel(new DivisionOperation(), testDal),
             };
         }
 
@@ -557,7 +559,7 @@ namespace Maths.Olympiad.Host.ViewModels
         public override string OperationType => _operation.OperationType;
 
 
-        public SimpleOperationViewModel(IOperation operation) : base(new SimpleOperationTestSessionInputViewModel())
+        public SimpleOperationViewModel(IOperation operation, ITestDal testDal) : base(new SimpleOperationTestSessionInputViewModel(), testDal)
         {
             _operation = operation;
         }
@@ -575,9 +577,14 @@ namespace Maths.Olympiad.Host.ViewModels
 
     public class SimpleOperationTestSessionViewModel : BaseTestSessionViewModel
     {
+        private readonly SimpleOperationTestSessionInputViewModel _testSessionInput;
+        private readonly IOperation _operation;
+
         public SimpleOperationTestSessionViewModel(SimpleOperationTestSessionInputViewModel testSessionInput, IOperation operation)
             : base(Generate(testSessionInput, operation))
         {
+            _testSessionInput = testSessionInput;
+            _operation = operation;
         }
 
         static IList<IQuestionViewModel> Generate(SimpleOperationTestSessionInputViewModel testSessionInput, IOperation operation)
@@ -594,6 +601,19 @@ namespace Maths.Olympiad.Host.ViewModels
             }
 
             return questions;
+        }
+
+        protected override TestHeader GetTestHeader()
+        {
+            return new TestHeader()
+            {
+                LeftMaxDecimals = _testSessionInput.FirstOperandMaxDecimalPlaces,
+                LeftMaxDigits = _testSessionInput.FirstOperandMaxDigits,
+                RightMaxDigits = _testSessionInput.SecondOperandMaxDigits,
+                RightMaxDecimals = _testSessionInput.SecondOperandMaxDecimalPlaces,
+                OperationType = _operation.OperationType,
+                TotalQuestions = _testSessionInput.MaxQuestions
+            };
         }
     }
 
@@ -618,11 +638,11 @@ namespace Maths.Olympiad.Host.ViewModels
     public abstract class BaseOperationViewModel<TTestSessionInput> : ViewModelBase, IOperationViewModel
         where TTestSessionInput : class, ITestSessionInputViewModel
     {
+        private readonly ITestDal _testDal;
         public TTestSessionInput TestSessionInput { get; }
         public abstract string OperationType { get; }
 
         private ITestSessionViewModel _session;
-
         public ITestSessionViewModel Session
         {
             get { return _session; }
@@ -637,11 +657,28 @@ namespace Maths.Olympiad.Host.ViewModels
             }
         }
 
+
+        private bool _inProgress;
+        public bool InProgress
+        {
+            get { return _inProgress; }
+            set
+            {
+                if (value == _inProgress)
+                {
+                    return;
+                }
+                _inProgress = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DelegateCommand GenerateCommand { get; private set; }
 
 
-        public BaseOperationViewModel(TTestSessionInput testSessionInput)
+        public BaseOperationViewModel(TTestSessionInput testSessionInput, ITestDal testDal)
         {
+            _testDal = testDal;
             TestSessionInput = testSessionInput;
 
             testSessionInput.ValidityStatusChanged += TestSessionInputOnValidityStatusChanged;
@@ -663,10 +700,27 @@ namespace Maths.Olympiad.Host.ViewModels
 
             if (Session != null)
             {
+                Session.Finished -= SessionOnFinished;
                 Session.Dispose();
             }
 
             Session = GetTestSessionViewModel();
+            Session.Finished += SessionOnFinished;
+            InProgress = true;
+        }
+
+        private void SessionOnFinished(object sender, EventArgs eventArgs)
+        {
+            if (!(sender is ITestSessionViewModel session))
+            {
+                return;
+            }
+
+            var testDetail = session.GetTestDetail();
+            testDetail.UserLogin = "ruhina.tappa";
+
+            _testDal.SaveTest(testDetail);
+            InProgress = false;
         }
 
         void ValidateForGenerateEnabled()
@@ -701,6 +755,8 @@ namespace Maths.Olympiad.Host.ViewModels
             }
 
             _timer.Enabled = true;
+
+            _performedDateTime = DateTime.UtcNow;
         }
 
         private void QuestionViewModelOnAccept(object sender, EventArgs eventArgs)
@@ -728,6 +784,8 @@ namespace Maths.Olympiad.Host.ViewModels
             {
                 questionViewModel.Validate();
             }
+
+            Finished?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnNext(object obj)
@@ -846,6 +904,24 @@ namespace Maths.Olympiad.Host.ViewModels
 
         public DelegateCommand FinishCommand { get; private set; }
         readonly Timer _timer;
+        private DateTime _performedDateTime;
+        public event EventHandler Finished;
+
+        public TestDetail GetTestDetail()
+        {
+            var questions = Questions.Select(model => model.GetQuestionDetails()).ToList();
+            return new TestDetail()
+            {
+                Duration = EllapsedTime,
+                PerformedDateTime = _performedDateTime,
+                Questions = questions,
+                CorrectQuestions = questions.Count(question => question.IsCorrect),
+                WrongQuestions = questions.Count(question => !question.IsCorrect),
+                Header = GetTestHeader()
+            };
+        }
+
+        protected abstract TestHeader GetTestHeader();
     }
 
     public abstract class BaseQuestionViewModel : ViewModelBase, IQuestionViewModel
@@ -957,6 +1033,19 @@ namespace Maths.Olympiad.Host.ViewModels
         }
 
         public event EventHandler Accept;
+        public TestQuestion GetQuestionDetails()
+        {
+            return new TestQuestion()
+            {
+                Duration = EllapsedTime,
+                Index= Index,
+                Answer= Total ?? 0.0,
+                LOperand = Item1,
+                ROperand = Item2,
+                OperationType = OperationSymbol,
+                IsCorrect = IsCorrect
+            };
+        }
 
         protected abstract bool IsCorrectValues(double leftOperand, double rightOperand, double totalValue);
     }
@@ -972,7 +1061,6 @@ namespace Maths.Olympiad.Host.ViewModels
         public BaseTestSessionInputViewModel()
         {
         }
-
         public abstract bool IsValid();
 
         public abstract Tuple<double, double> GetNextOperands();
@@ -1001,10 +1089,13 @@ namespace Maths.Olympiad.Host.ViewModels
         void IncrementSecond();
 
         event EventHandler Accept;
+        TestQuestion GetQuestionDetails();
     }
 
     public interface ITestSessionViewModel : IDisposable
     {
+        event EventHandler Finished;
+        TestDetail GetTestDetail();
     }
 
     public interface ITestSessionInputViewModel

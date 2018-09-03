@@ -1,0 +1,29 @@
+CREATE KEYSPACE maths_olympiad
+  WITH REPLICATION = { 
+   'class' : 'SimpleStrategy', 
+   'replication_factor' : 1 
+  };
+  
+CREATE TABLE maths_olympiad.test (
+   userlogin text, 
+   performeddatetime timestamp, 
+   operationtype text, 
+   header text, 
+   totalquestions int, 
+   correctquestions int, 
+   wrongquestions int, 
+   duration time, 
+   PRIMARY KEY (userlogin, performeddatetime));
+   
+
+CREATE TABLE maths_olympiad.testquestion (
+   userlogin text,    
+   qindex int, 
+   performeddatetime timestamp, 
+   operationtype text, 
+   loperand double, 
+   roperand double, 
+   answer double, 
+   iscorrect boolean,  
+   duration time, 
+   PRIMARY KEY (userlogin, performeddatetime, qindex));

@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Configuration;
+using Maths.Olympiad.Dal;
 using Maths.Olympiad.Host.ViewModels;
 
 namespace Maths.Olympiad.Host
@@ -12,7 +15,19 @@ namespace Maths.Olympiad.Host
         {
             InitializeComponent();
 
-            DataContext = new MathematicsScreenViewModel();
+            try
+            {
+                var connection = ConfigurationManager.AppSettings["Connection"];
+                var keySpace = ConfigurationManager.AppSettings["KeySpace"];
+
+                //var testDal = new TestDal(connection, keySpace, new JSonSerializer());
+                var testDal = new DummyTestDal();
+                DataContext = new MathematicsScreenViewModel(testDal);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
     }
 }

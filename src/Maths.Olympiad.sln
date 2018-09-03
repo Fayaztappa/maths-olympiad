@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maths.Olympiad.Host", "Maths.Olympiad.Host\Maths.Olympiad.Host.csproj", "{2CC67954-9C0A-43CD-92AE-450FBCC284E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maths.Olympiad.Dal", "Maths.Olympiad.Dal\Maths.Olympiad.Dal.csproj", "{4C77C157-118B-485D-A62D-19669FE7BB66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2CC67954-9C0A-43CD-92AE-450FBCC284E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CC67954-9C0A-43CD-92AE-450FBCC284E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CC67954-9C0A-43CD-92AE-450FBCC284E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C77C157-118B-485D-A62D-19669FE7BB66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C77C157-118B-485D-A62D-19669FE7BB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C77C157-118B-485D-A62D-19669FE7BB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C77C157-118B-485D-A62D-19669FE7BB66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
