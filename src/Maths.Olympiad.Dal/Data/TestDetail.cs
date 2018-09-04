@@ -22,6 +22,7 @@ namespace Maths.Olympiad.Dal.Data
         public double LOperand { get; set; }
         public double ROperand { get; set; }
         public double Answer { get; set; }
+        public string Expression { get; set; }
         public bool IsCorrect{ get; set; }
         public TimeSpan Duration { get; set; }
     }

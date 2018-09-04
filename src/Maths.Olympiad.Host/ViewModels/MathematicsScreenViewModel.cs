@@ -621,6 +621,7 @@ namespace Maths.Olympiad.Host.ViewModels
     {
         private readonly IOperation _operation;
         public override string OperationSymbol => _operation.OperationSymbol;
+        public override double CorrectAnswer => _operation.GetComputedValue(Item1, Item2);
 
         public SimpleOperationQuestionViewModel(IOperation operation, int index, double item1, double item2, string format, bool isLastQuestion) :
             base(index, item1, item2, format, isLastQuestion)
@@ -769,6 +770,7 @@ namespace Maths.Olympiad.Host.ViewModels
             try
             {
                 SelectedQuestion?.IncrementSecond();
+                IncrementSecond();
             }
             finally
             {
@@ -786,6 +788,8 @@ namespace Maths.Olympiad.Host.ViewModels
             }
 
             Finished?.Invoke(this, EventArgs.Empty);
+
+            RaisePropertyChanged(nameof(TotalCorrectQuestions));
         }
 
         private void OnNext(object obj)
@@ -899,6 +903,8 @@ namespace Maths.Olympiad.Host.ViewModels
             }
         }
 
+        public int TotalCorrectQuestions => Questions.Count(model => model.IsCorrect);
+
         public DelegateCommand PreviousCommand { get; private set; }
         public DelegateCommand NextCommand { get; private set; }
 
@@ -999,7 +1005,9 @@ namespace Maths.Olympiad.Host.ViewModels
         }
 
         public bool HasValue => Total.HasValue;
+        public string Expression => $"{Item1}{OperationSymbol}{Item2}";
         public abstract string OperationSymbol { get; }
+        public abstract double CorrectAnswer { get; }
 
         public BaseQuestionViewModel(int index, double item1, double item2, string format, bool isLastQuestion)
         {
@@ -1043,7 +1051,8 @@ namespace Maths.Olympiad.Host.ViewModels
                 LOperand = Item1,
                 ROperand = Item2,
                 OperationType = OperationSymbol,
-                IsCorrect = IsCorrect
+                IsCorrect = IsCorrect,
+                Expression = Expression
             };
         }
 
@@ -1085,6 +1094,7 @@ namespace Maths.Olympiad.Host.ViewModels
     public interface IQuestionViewModel
     {
         bool HasValue { get; }
+        bool IsCorrect { get; }
         void Validate();
         void IncrementSecond();
 

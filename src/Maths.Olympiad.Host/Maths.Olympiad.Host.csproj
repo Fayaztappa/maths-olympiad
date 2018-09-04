@@ -79,6 +79,9 @@
     <Compile Include="Views\SimpleOperationTestSessionInputView.xaml.cs">
       <DependentUpon>SimpleOperationTestSessionInputView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TestResultView.xaml.cs">
+      <DependentUpon>TestResultView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TestSessionView.xaml.cs">
       <DependentUpon>TestSessionView.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SimpleOperationTestSessionInputView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TestResultView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
