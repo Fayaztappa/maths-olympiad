@@ -21,6 +21,7 @@ namespace Maths.Olympiad.Dal.Data
         public string OperationType { get; set; }
         public double LOperand { get; set; }
         public double ROperand { get; set; }
+        public double CorrectAnswer { get; set; }
         public double Answer { get; set; }
         public string Expression { get; set; }
         public bool IsCorrect{ get; set; }

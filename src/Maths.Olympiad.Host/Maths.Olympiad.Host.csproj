@@ -58,8 +58,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Services\IDialogService.cs" />
     <Compile Include="ViewModels\IOperationViewModel.cs" />
     <Compile Include="ViewModels\MathematicsScreenViewModel.cs" />
+    <Compile Include="ViewModels\TestResultViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\AAndSTestSessionInputView.xaml.cs">
       <DependentUpon>AAndSTestSessionInputView.xaml</DependentUpon>
@@ -86,6 +91,10 @@
       <DependentUpon>TestSessionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TextBoxCommitOnEnterBehavior.cs" />
+    <Page Include="DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -9,7 +9,7 @@ namespace Maths.Olympiad.Dal.Interfaces
         private readonly ISerializer _serializer;
 
         const string InsertTest = "INSERT INTO [dbo].[Test]([UserLogin],[PerformedDatetime],[Header],[TotalQuestions],[CorrectQuestions],[Duration]) output INSERTED.TestId VALUES(@UserLogin,@PerformedDatetime,@Header,@TotalQuestions,@CorrectQuestions,@Duration)";
-        const string InsertTestQuestion = "INSERT INTO [dbo].[TestQuestion]([TestId],[QIndex],[OperationType],[LOperand],[ROperand],[Expression],[Answer],[IsCorrect],[Duration]) VALUES(@TestId,@QIndex,@OperationType,@LOperand,@ROperand,@Expression,@Answer,@IsCorrect,@Duration)";
+        const string InsertTestQuestion = "INSERT INTO [dbo].[TestQuestion]([TestId],[QIndex],[OperationType],[LOperand],[ROperand],[Expression],[CorrectAnswer],[Answer],[IsCorrect],[Duration]) VALUES(@TestId,@QIndex,@OperationType,@LOperand,@ROperand,@Expression,@CorrectAnswer,@Answer,@IsCorrect,@Duration)";
 
 
         public SqlServerTestDal(string connection, ISerializer serializer)
@@ -50,6 +50,7 @@ namespace Maths.Olympiad.Dal.Interfaces
                             command.Parameters.AddWithValue("@LOperand", testDetailQuestion.LOperand);
                             command.Parameters.AddWithValue("@ROperand", testDetailQuestion.ROperand);
                             command.Parameters.AddWithValue("@Expression", testDetailQuestion.Expression);
+                            command.Parameters.AddWithValue("@CorrectAnswer", testDetailQuestion.CorrectAnswer);
                             command.Parameters.AddWithValue("@Answer", testDetailQuestion.Answer);
                             command.Parameters.AddWithValue("@IsCorrect", testDetailQuestion.IsCorrect);
                             command.Parameters.AddWithValue("@Duration", testDetailQuestion.Duration.Ticks);

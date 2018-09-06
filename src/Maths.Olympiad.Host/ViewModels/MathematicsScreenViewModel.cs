@@ -5,6 +5,7 @@ using System.Timers;
 using System.Windows.Input;
 using Maths.Olympiad.Dal.Data;
 using Maths.Olympiad.Dal.Interfaces;
+using Maths.Olympiad.Host.Services;
 
 namespace Maths.Olympiad.Host.ViewModels
 {
@@ -31,16 +32,16 @@ namespace Maths.Olympiad.Host.ViewModels
             }
         }
 
-        public MathematicsScreenViewModel(ITestDal testDal)
+        public MathematicsScreenViewModel(ITestDal testDal, IDialogService dialogService)
         {
             GenerateSamplesCommand = new DelegateCommand(OnGenerateSamples);
 
             Operations = new List<IOperationViewModel>()
             {
-                new SimpleOperationViewModel(new AdditionOperation(), testDal),
-                new SimpleOperationViewModel(new SubstractionOperation(), testDal),
-                new SimpleOperationViewModel(new MultiplicationOperation(), testDal),
-                new SimpleOperationViewModel(new DivisionOperation(), testDal),
+                new SimpleOperationViewModel(new AdditionOperation(), testDal, dialogService),
+                new SimpleOperationViewModel(new SubstractionOperation(), testDal, dialogService),
+                new SimpleOperationViewModel(new MultiplicationOperation(), testDal, dialogService),
+                new SimpleOperationViewModel(new DivisionOperation(), testDal, dialogService),
             };
         }
 
@@ -556,17 +557,19 @@ namespace Maths.Olympiad.Host.ViewModels
     public class SimpleOperationViewModel : BaseOperationViewModel<SimpleOperationTestSessionInputViewModel>
     {
         private readonly IOperation _operation;
+        private IDialogService _dialogService;
         public override string OperationType => _operation.OperationType;
 
 
-        public SimpleOperationViewModel(IOperation operation, ITestDal testDal) : base(new SimpleOperationTestSessionInputViewModel(), testDal)
+        public SimpleOperationViewModel(IOperation operation, ITestDal testDal, IDialogService dialogService) : base(new SimpleOperationTestSessionInputViewModel(), testDal)
         {
             _operation = operation;
+            _dialogService = dialogService;
         }
 
         protected override ITestSessionViewModel GetTestSessionViewModel()
         {
-            return new SimpleOperationTestSessionViewModel(TestSessionInput, _operation);
+            return new SimpleOperationTestSessionViewModel(TestSessionInput, _operation, _dialogService);
         }
 
         protected override bool CanGenerateTestSession()
@@ -580,8 +583,8 @@ namespace Maths.Olympiad.Host.ViewModels
         private readonly SimpleOperationTestSessionInputViewModel _testSessionInput;
         private readonly IOperation _operation;
 
-        public SimpleOperationTestSessionViewModel(SimpleOperationTestSessionInputViewModel testSessionInput, IOperation operation)
-            : base(Generate(testSessionInput, operation))
+        public SimpleOperationTestSessionViewModel(SimpleOperationTestSessionInputViewModel testSessionInput, IOperation operation, IDialogService dialogService)
+            : base(Generate(testSessionInput, operation),dialogService)
         {
             _testSessionInput = testSessionInput;
             _operation = operation;
@@ -735,13 +738,17 @@ namespace Maths.Olympiad.Host.ViewModels
 
     public abstract class BaseTestSessionViewModel : ViewModelBase, ITestSessionViewModel
     {
-        public BaseTestSessionViewModel(IList<IQuestionViewModel> questions)
+        private readonly IDialogService _dialogService;
+
+        public BaseTestSessionViewModel(IList<IQuestionViewModel> questions, IDialogService dialogService)
         {
+            _dialogService = dialogService;
             EllapsedTime = TimeSpan.Zero;
 
             PreviousCommand = new DelegateCommand(OnPrevious, o => Questions.Count > 0 && Questions[0] != SelectedQuestion);
             NextCommand = new DelegateCommand(OnNext, o => Questions.Count > 0 && Questions.Last() != SelectedQuestion);
             FinishCommand = new DelegateCommand(OnFinish, o => Questions.Count > 0);
+            ShowResultCommand = new DelegateCommand(OnShowResult, o => IsFinished);
 
             _timer = new Timer(1000) { AutoReset = false };
 
@@ -790,6 +797,7 @@ namespace Maths.Olympiad.Host.ViewModels
             Finished?.Invoke(this, EventArgs.Empty);
 
             RaisePropertyChanged(nameof(TotalCorrectQuestions));
+            ShowResultCommand.RaiseCanExecuteChanged();
         }
 
         private void OnNext(object obj)
@@ -802,6 +810,12 @@ namespace Maths.Olympiad.Host.ViewModels
             SelectedQuestion = Questions[Questions.IndexOf(SelectedQuestion) - 1];
         }
 
+        private void OnShowResult(object obj)
+        {
+            var testDetail = GetTestDetail();
+
+            _dialogService.ShowDialog(new TestResultViewModel(testDetail));
+        }
 
 
         protected static double GetNextNumber(Random random, int maxDigits, int maxDecimalPlaces)
@@ -909,8 +923,9 @@ namespace Maths.Olympiad.Host.ViewModels
         public DelegateCommand NextCommand { get; private set; }
 
         public DelegateCommand FinishCommand { get; private set; }
+        public DelegateCommand ShowResultCommand { get; private set; }
         readonly Timer _timer;
-        private DateTime _performedDateTime;
+        private readonly DateTime _performedDateTime;
         public event EventHandler Finished;
 
         public TestDetail GetTestDetail()
@@ -1047,6 +1062,7 @@ namespace Maths.Olympiad.Host.ViewModels
             {
                 Duration = EllapsedTime,
                 Index= Index,
+                CorrectAnswer= CorrectAnswer,
                 Answer= Total ?? 0.0,
                 LOperand = Item1,
                 ROperand = Item2,

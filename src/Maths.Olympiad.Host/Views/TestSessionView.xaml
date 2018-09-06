@@ -31,6 +31,7 @@
         </StackPanel>
 
         <Button Grid.Row="3" Grid.Column="0" Style="{StaticResource ActionButtonStyle}" Visibility="{Binding SelectedQuestion, Converter={StaticResource IsNullValueToBooleanConverter}}" Command="{Binding FinishCommand}" Content="Finish" IsEnabled="{Binding IsFinished, Converter={StaticResource BooleanNotConverter}}"/>
+        <Button Grid.Row="3" Grid.Column="0" Style="{StaticResource ActionButtonStyle}" Visibility="{Binding IsFinished, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding ShowResultCommand}" Content="Report" />
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" Visibility="{Binding IsFinished, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock Text="Correct Questions:" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Foreground="Green"/>

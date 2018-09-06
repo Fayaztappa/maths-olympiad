@@ -4,24 +4,63 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Maths.Olympiad.Host.Views"
+             xmlns:viewModels="clr-namespace:Maths.Olympiad.Host.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type viewModels:TestResultViewModel}}">
+    <UserControl.Resources>
+        <Style x:Key="AnswerStyle" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="Green"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCorrect}" Value="False">
+                    <Setter Property="Background" Value="DarkRed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <GroupBox Header="Test Session">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Questions:"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TotalQuestions}"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="Performed DateTime:"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding DateTime}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Correct Questions:"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RightQuestions}"/>
+                <TextBlock Grid.Row="2" Grid.Column="3" Text="Duration:"/>
+                <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Duration}"/>
+
+            </Grid>
+        </GroupBox>
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <TextBlock Text="Total Questions:"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Questions}">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Questions}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Index}" Header="#" Width="30"/>
                 <DataGridTextColumn Binding="{Binding Expression}" Header="Question" Width="150"/>
-                <DataGridTextColumn Binding="{Binding Answer}" Header="Answer" Width="70"/>
-                <DataGridTextColumn Binding="{Binding IsCorrect}" Header="Right/Wrong" Width="80"/>
-                <DataGridTextColumn Binding="{Binding EllapsedTime}" Header="EllapsedTime" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Answer}" Header="Answer" Width="70" CellStyle="{StaticResource AnswerStyle}"/>
                 <DataGridTextColumn Binding="{Binding CorrectAnswer}" Header="ExpectedAnswer" Width="70"/>
+                <DataGridTextColumn Binding="{Binding IsCorrect}" Header="Right/Wrong" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Duration}" Header="EllapsedTime" Width="80"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
